@@ -1,0 +1,35 @@
+{
+  "name": "@basedigital/modal",
+  "version": "0.0.1",
+  "description": "A useModal hook to handle acessible modals",
+  "author": "Gustavo Bremm <gustavo@base.digital>",
+  "homepage": "https://github.com/gustavorino/basedigital#readme",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "directories": {
+    "dist": "dist"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustavorino/basedigital.git"
+  },
+  "scripts": {
+    "dev": "tsc-watch -p tsconfig.build.json",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json"
+  },
+  "bugs": {
+    "url": "https://github.com/gustavorino/basedigital/issues"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  "dependencies": {
+    "tsc-watch": "^4.4.0",
+    "typescript": "^4.3.2"
+  }
+}

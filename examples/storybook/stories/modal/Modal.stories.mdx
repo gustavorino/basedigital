@@ -1,0 +1,112 @@
+<Meta title="Modal/Introduction" />
+
+# Modal
+
+## Core concepts
+
+This modal library has no style dependency, meaning that it provides the building blocks for building modals without assuming how they should look or behave.
+
+## Features
+
+- style agnostic, this modal system comes with no styles at all.
+- portal rendering, modals are rendered in the root provider.
+- a11y - tab loop, you can't tab out of the modal
+
+## Usage
+
+- Make sure to add the ModalProvider in our application, usually at root level
+
+```jsx
+import { ModalProvider } from "@basedigital/modal";
+
+//...
+
+<ModalProvider bodyClass="some-modal-is-open">
+  {/* this is where the modals will be rendered via portal */}
+  <MyApp />
+</ModalProvider>;
+//...
+```
+
+- the <i>bodyClass</i> class will be added to <i>&lt;body&gt;</i> when any modal is visible, so you can do things like hiding the body scroll bar.
+
+```css
+body.some-modal-is-open {
+  overflow: hidden;
+}
+```
+
+- On component level, create your modal
+
+```jsx
+import { useModal } from "@basedigital/modal";
+function MyComponent() {
+  const modal = useModal({
+    closeEnabled: true,
+    component: (
+      <MyDefaultModal>
+        <div>This will show up as a modal</div>
+      </MyDefaultModal>
+    ),
+  });
+
+  return (
+    <div>
+      {modal.elem}
+      This is my component
+      <button onClick={() => modal.open()}>Open modal</button>
+    </div>
+  );
+}
+```
+
+- Make sure to return the <i>{modal.elem}</i> in your render output. Under the hood, the modal render tree is still linked to the component that created it. This allows you to use state within the modal, like so:
+
+```jsx
+import { useModal } from "@basedigital/modal";
+
+function MyComponent() {
+  const [count, setCount] = useState(0);
+
+  const modal = useModal({
+    component: (
+      <MyDefaultModal>
+        <div>You have clicked {count} times</div>
+        <button onClick={() => setCount((i) => i + 1)}>
+          You can click here too
+        </button>
+      </MyDefaultModal>
+    ),
+  });
+
+  return (
+    <div>
+      {modal.elem}
+      <button onClick={() => setCount((i) => i + 1)}>Click here</button>
+    </div>
+  );
+}
+```
+
+- Since the @basedigital/modal is style agnostic, you might want to create a DefaultModal structure. You can have as many as you want. Like so:
+
+```jsx
+import { useModalContent } from "modal/useModal";
+import React from "react";
+import "./MyDefaultModal.css";
+
+export function MyDefaultModal({ children }) {
+  const { close, closeEnabled } = useModalContent();
+
+  return (
+    <div className="myAwesomeModal">
+      <div>{props.children}</div>
+      {closeEnabled && (
+        <button onClick={close} className="myAwesomeModal__closeBtn">
+          Close
+        </button>
+      )}
+    </div>
+  );
+}
+```

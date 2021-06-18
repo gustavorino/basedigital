@@ -1,19 +1,17 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import React, { PropsWithChildren, useCallback, useRef } from "react";
 
-const SELECTION = "button,a,[tabIndex],input,textarea";
+const FIRST_SELECTOR = `a:not([disabled]), button:not([disabled]), input:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"]), textarea, select`;
 
 type ModalProps = PropsWithChildren<{
-  //
+  disableFocusLoop?: boolean;
   initialSelector?: string;
 }>;
 export function Modal(props: ModalProps) {
-  const focusFirst = useRef<HTMLDivElement | null>(null);
-  const focusLast = useRef<HTMLDivElement | null>(null);
   const modal = useRef<HTMLDivElement | null>(null);
 
   const focusOnFirst = useCallback(() => {
-    const search = modal.current?.querySelector(SELECTION);
+    const search = modal.current?.querySelector(FIRST_SELECTOR);
 
     search && (search as HTMLElement).focus();
   }, []);
@@ -22,13 +20,16 @@ export function Modal(props: ModalProps) {
     (ref) => {
       modal.current = ref;
       if (ref) {
-        const input = modal.current?.querySelector(
-          props.initialSelector || "input,textarea,select"
-        );
-        if (input) {
-          (input as HTMLElement).focus();
-        } else {
-          focusOnFirst();
+        // null should bypass initial focus completely
+        if (props.initialSelector !== null) {
+          const input = modal.current?.querySelector(
+            props.initialSelector || FIRST_SELECTOR
+          );
+          if (input) {
+            (input as HTMLElement).focus();
+          } else {
+            focusOnFirst();
+          }
         }
       }
     },
@@ -36,7 +37,7 @@ export function Modal(props: ModalProps) {
   );
 
   const focusOnLast = useCallback(() => {
-    const search = modal.current?.querySelectorAll(SELECTION);
+    const search = modal.current?.querySelectorAll(FIRST_SELECTOR);
     if (!search) {
       return;
     }
@@ -45,11 +46,15 @@ export function Modal(props: ModalProps) {
 
   return (
     <div className="Modal">
-      <div ref={focusFirst} onFocus={focusOnLast} tabIndex={0} />
+      {!props.disableFocusLoop && (
+        <div onFocus={focusOnLast} role="none" tabIndex={0} />
+      )}
       <div ref={setModal} className="Modal__children">
         {props.children}
       </div>
-      <div ref={focusLast} onFocus={focusOnFirst} tabIndex={0} />
+      {!props.disableFocusLoop && (
+        <div onFocus={focusOnFirst} role="none" tabIndex={0} />
+      )}
     </div>
   );
 }

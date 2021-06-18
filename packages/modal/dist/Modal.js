@@ -22,41 +22,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Modal = void 0;
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 var react_1 = __importStar(require("react"));
-var SELECTION = "button,a,[tabIndex],input,textarea";
+var FIRST_SELECTOR = "a:not([disabled]), button:not([disabled]), input:not([disabled]), [tabindex]:not([disabled]):not([tabindex=\"-1\"]), textarea, select";
 function Modal(props) {
-    var focusFirst = react_1.useRef(null);
-    var focusLast = react_1.useRef(null);
     var modal = react_1.useRef(null);
     var focusOnFirst = react_1.useCallback(function () {
         var _a;
-        var search = (_a = modal.current) === null || _a === void 0 ? void 0 : _a.querySelector(SELECTION);
+        var search = (_a = modal.current) === null || _a === void 0 ? void 0 : _a.querySelector(FIRST_SELECTOR);
         search && search.focus();
     }, []);
     var setModal = react_1.useCallback(function (ref) {
         var _a;
         modal.current = ref;
         if (ref) {
-            var input = (_a = modal.current) === null || _a === void 0 ? void 0 : _a.querySelector(props.initialSelector || "input,textarea,select");
-            if (input) {
-                input.focus();
-            }
-            else {
-                focusOnFirst();
+            // null should bypass initial focus completely
+            if (props.initialSelector !== null) {
+                var input = (_a = modal.current) === null || _a === void 0 ? void 0 : _a.querySelector(props.initialSelector || FIRST_SELECTOR);
+                if (input) {
+                    input.focus();
+                }
+                else {
+                    focusOnFirst();
+                }
             }
         }
     }, [modal, focusOnFirst, props.initialSelector]);
     var focusOnLast = react_1.useCallback(function () {
         var _a;
-        var search = (_a = modal.current) === null || _a === void 0 ? void 0 : _a.querySelectorAll(SELECTION);
+        var search = (_a = modal.current) === null || _a === void 0 ? void 0 : _a.querySelectorAll(FIRST_SELECTOR);
         if (!search) {
             return;
         }
         (search === null || search === void 0 ? void 0 : search.length) > 0 && search[(search === null || search === void 0 ? void 0 : search.length) - 1].focus();
     }, []);
     return (react_1.default.createElement("div", { className: "Modal" },
-        react_1.default.createElement("div", { ref: focusFirst, onFocus: focusOnLast, tabIndex: 0 }),
+        !props.disableFocusLoop && (react_1.default.createElement("div", { onFocus: focusOnLast, role: "none", tabIndex: 0 })),
         react_1.default.createElement("div", { ref: setModal, className: "Modal__children" }, props.children),
-        react_1.default.createElement("div", { ref: focusLast, onFocus: focusOnFirst, tabIndex: 0 })));
+        !props.disableFocusLoop && (react_1.default.createElement("div", { onFocus: focusOnFirst, role: "none", tabIndex: 0 }))));
 }
 exports.Modal = Modal;
 //# sourceMappingURL=Modal.js.map

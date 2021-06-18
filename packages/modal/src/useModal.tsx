@@ -16,10 +16,21 @@ function getNextId() {
 }
 
 type UseModalParams = {
-  closeEnabled?: boolean;
-  modal: ReactNode;
+  component: ReactNode;
   open?: boolean;
-  initialSelector?: string;
+  /**
+   * The initial selector for that modal, eg: ".my-custom-input"
+   * - Use 'null' to disable the initial focus
+   * - Default: focusable elements
+   */
+  initialSelector?: string | null;
+
+  /**
+   * Enable/disable modal focus loop.
+   * - Setting this to false doesn't disable initialSelector
+   * - Default true.
+   */
+  disableFocusLoop?: boolean;
 };
 export function useModal<M>(data: UseModalParams) {
   const context = useContext(ModalContext);
@@ -69,14 +80,15 @@ export function useModal<M>(data: UseModalParams) {
         <WithInnerModalContext
           contextData={{
             close: closeModal,
-            closeEnabled:
-              data.closeEnabled === undefined ? true : !!data.closeEnabled,
           }}
         >
-          <Modal initialSelector={data.initialSelector}>
-            {typeof data.modal === "function"
-              ? data.modal({ onClose: closeModal })
-              : React.cloneElement(data.modal as any, {
+          <Modal
+            disableFocusLoop={data.disableFocusLoop}
+            initialSelector={data.initialSelector}
+          >
+            {typeof data.component === "function"
+              ? data.component({ onClose: closeModal })
+              : React.cloneElement(data.component as any, {
                   onClose: closeModal,
                   meta: meta,
                 })}
@@ -89,7 +101,7 @@ export function useModal<M>(data: UseModalParams) {
 
 function WithInnerModalContext(props: {
   children: ReactNode;
-  contextData: { close(): void; closeEnabled: boolean };
+  contextData: { close(): void };
 }) {
   return (
     <ModalInnerContext.Provider value={props.contextData}>

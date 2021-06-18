@@ -42,7 +42,6 @@ body.some-modal-is-open {
 import { useModal } from "@basedigital/modal";
 function MyComponent() {
   const modal = useModal({
-    closeEnabled: true,
     component: (
       <MyDefaultModal>
         <div>This will show up as a modal</div>
@@ -70,7 +69,7 @@ function MyComponent() {
 
   const modal = useModal({
     component: (
-      <MyDefaultModal>
+      <MyDefaultModal closeEnabled={false}>
         <div>You have clicked {count} times</div>
         <button onClick={() => setCount((i) => i + 1)}>
           You can click here too
@@ -95,13 +94,14 @@ import { useModalContent } from "modal/useModal";
 import React from "react";
 import "./MyDefaultModal.css";
 
-export function MyDefaultModal({ children }) {
-  const { close, closeEnabled } = useModalContent();
+export function MyDefaultModal({ children, closeEnabled }) {
+  const { close } = useModalContent();
 
   return (
     <div className="myAwesomeModal">
       <div>{props.children}</div>
-      {closeEnabled && (
+
+      {!!closeEnabled && (
         <button onClick={close} className="myAwesomeModal__closeBtn">
           Close
         </button>

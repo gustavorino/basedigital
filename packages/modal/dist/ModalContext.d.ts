@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 declare type ModalContextType = {
     portalElem?: HTMLDivElement | null;
     onModalOpen: (id: number) => void;
@@ -6,7 +6,6 @@ declare type ModalContextType = {
 };
 declare const ModalContext: React.Context<ModalContextType>;
 declare type ModalInnerContextType = {
-    closeEnabled: boolean;
     close(): void;
 };
 declare const ModalInnerContext: React.Context<ModalInnerContextType>;

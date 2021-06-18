@@ -1,28 +1,26 @@
-import React from 'react'
+import React from "react";
 
 type ModalContextType = {
-  portalElem?: HTMLDivElement | null
-  onModalOpen: (id: number) => void
-  onModalClose: (id: number) => void
-}
+  portalElem?: HTMLDivElement | null;
+  onModalOpen: (id: number) => void;
+  onModalClose: (id: number) => void;
+};
 const defaultContext: ModalContextType = {
   portalElem: null,
   onModalOpen: () => {},
   onModalClose: () => {},
-}
+};
 
-const ModalContext = React.createContext(defaultContext)
+const ModalContext = React.createContext(defaultContext);
 
 type ModalInnerContextType = {
-  closeEnabled: boolean
-  close(): void
-}
+  close(): void;
+};
 const defaultInnerContext: ModalInnerContextType = {
-  closeEnabled: true,
   close() {
-    throw new Error('This component is not inside a modal')
+    throw new Error("This component is not inside a modal");
   },
-}
-const ModalInnerContext = React.createContext(defaultInnerContext)
+};
+const ModalInnerContext = React.createContext(defaultInnerContext);
 
-export { ModalContext, ModalInnerContext }
+export { ModalContext, ModalInnerContext };

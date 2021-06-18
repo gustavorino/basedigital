@@ -13,9 +13,8 @@ var defaultContext = {
 var ModalContext = react_1.default.createContext(defaultContext);
 exports.ModalContext = ModalContext;
 var defaultInnerContext = {
-    closeEnabled: true,
     close: function () {
-        throw new Error('This component is not inside a modal');
+        throw new Error("This component is not inside a modal");
     },
 };
 var ModalInnerContext = react_1.default.createContext(defaultInnerContext);

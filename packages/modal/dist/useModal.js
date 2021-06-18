@@ -69,11 +69,10 @@ function useModal(data) {
         elem: isOpen ? (react_1.default.createElement(WithPortal, { portalElem: context.portalElem },
             react_1.default.createElement(WithInnerModalContext, { contextData: {
                     close: closeModal,
-                    closeEnabled: data.closeEnabled === undefined ? true : !!data.closeEnabled,
                 } },
-                react_1.default.createElement(Modal_1.Modal, { initialSelector: data.initialSelector }, typeof data.modal === "function"
-                    ? data.modal({ onClose: closeModal })
-                    : react_1.default.cloneElement(data.modal, {
+                react_1.default.createElement(Modal_1.Modal, { disableFocusLoop: data.disableFocusLoop, initialSelector: data.initialSelector }, typeof data.component === "function"
+                    ? data.component({ onClose: closeModal })
+                    : react_1.default.cloneElement(data.component, {
                         onClose: closeModal,
                         meta: meta,
                     }))))) : undefined,
